@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using NPVCalc.DAL;
 using NPVCalc.Models;
+using Newtonsoft.Json;
 
 namespace NPVCalc.Controllers
 {
@@ -47,7 +48,7 @@ namespace NPVCalc.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "NPVId,LowerBoundDiscountRate,UpperBoundDiscountRate,DiscountRateIncrement,CashFlows")] NPV nPV)
+        public ActionResult Create([Bind(Include = "NPVId,LowerBoundDiscountRate,UpperBoundDiscountRate,DiscountRateIncrement,CashFlows,NPVs")] NPV nPV)
         {
             if (ModelState.IsValid)
             {
@@ -73,14 +74,32 @@ namespace NPVCalc.Controllers
             }
             return View(nPV);
         }
-
-        public string CalculateNPV(string cashFlow,double upDiscRate, double lowDiscRate)
+        public NPV GenerateNPV(string cashFlows, double lowDiscRate, double upDiscRate, double discountRateInc)
         {
-            string npvString = "";
             double npv;
-            string[] cashFlows = cashFlow.Split();
+            string[] cashFlow = cashFlows.Split(',');
+            NPV npvItem = new NPV();
+            npvItem.CashFlows = cashFlows;
+            npvItem.UpperBoundDiscountRate = upDiscRate;
+            npvItem.LowerBoundDiscountRate = lowDiscRate;
+            npvItem.DiscountRateIncrement = discountRateInc;
 
-            return npvString;
+            for (double y = lowDiscRate; y <= upDiscRate; y += discountRateInc)
+            {
+                for (int i = 0; i < cashFlows.Length; i++)
+                {
+                    int period = i + 1;
+                    npv = Convert.ToInt32(cashFlow[i]) / (1 + Math.Pow(y, period));
+                    //var npvItem = new JavaScriptSerializer().Deserialize<NPVItem>(example2);
+
+                    //Console.WriteLine("Discount: " + y + "% Period: " + period + " NPV: " + npv);
+                    npvItem.NPVList.Add(new NPVItemResult { Discount = y, Period = period, NPVResult = npv });
+                    npvItem.NPVs = JsonConvert.SerializeObject(npvItem);
+
+                }
+            }
+
+            return npvItem;
         }
 
         // POST: NPV/Edit/5
@@ -88,12 +107,15 @@ namespace NPVCalc.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "NPVId,LowerBoundDiscountRate,UpperBoundDiscountRate,DiscountRateIncrement,CashFlows")] NPV nPV)
+        public ActionResult Edit([Bind(Include = "NPVId,LowerBoundDiscountRate,UpperBoundDiscountRate,DiscountRateIncrement,CashFlows,NPVs")] NPV nPV)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(nPV).State = EntityState.Modified;
-                int npv = Convert.ToInt32(CalculateNPV(nPV.CashFlows, nPV.UpperBoundDiscountRate, nPV.LowerBoundDiscountRate));
+                
+                var generatedNPV = GenerateNPV(nPV.CashFlows, nPV.LowerBoundDiscountRate, nPV.UpperBoundDiscountRate, nPV.DiscountRateIncrement);
+                nPV.NPVs = generatedNPV.NPVs;
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

@@ -23,6 +23,9 @@
         <th>
             @Html.DisplayNameFor(model => model.CashFlows)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NPVs)
+        </th>
         <th></th>
     </tr>
 
@@ -39,6 +42,9 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.CashFlows)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NPVs)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.NPVId }) |

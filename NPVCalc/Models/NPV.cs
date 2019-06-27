@@ -12,6 +12,18 @@ namespace NPVCalc.Models
         public double UpperBoundDiscountRate { get; set; }
         public double DiscountRateIncrement { get; set; }
         public string CashFlows { get; set; }
-        public double[] NPVs { get; set; }
+        public string NPVs { get; set; }
+        public List<NPVItemResult> NPVList { get; set; }
     }
+
+    public class NPVItemResult
+    {
+        public int NPVItemResultId { get; set; }
+        public int Period { get; set; }
+        public double NPVResult { get; set; }
+        public double Discount { get; set; }
+        public NPV NPV { get; set; }
+    }
+
+
 }

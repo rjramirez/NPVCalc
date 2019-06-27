@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
@@ -19,7 +20,11 @@ namespace NPVCalc.DAL
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+            modelBuilder.Entity<NPV>().HasKey(t => t.NPVId); //primary key defination  
+            modelBuilder.Entity<NPV>().Property(t => t.NPVId)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);  //identity col           
+            base.OnModelCreating(modelBuilder);
+
         }
 
 
