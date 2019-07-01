@@ -17,13 +17,16 @@ namespace NPVCalc.DAL
         }
 
         public DbSet<NPV> NPV { get; set; }
+        public DbSet<NPVItemResult> NPVItemResult { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<NPV>().HasKey(t => t.NPVId); //primary key defination  
-            modelBuilder.Entity<NPV>().Property(t => t.NPVId)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);  //identity col           
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
+            //modelBuilder.Entity<NPV>().HasKey(t => t.NPVId); //primary key defination  
+            //modelBuilder.Entity<NPV>().Property(t => t.NPVId)
+            //    .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);  //identity col           
+            //base.OnModelCreating(modelBuilder);
 
         }
 

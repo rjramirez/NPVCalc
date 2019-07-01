@@ -23,9 +23,6 @@
         <th>
             @Html.DisplayNameFor(model => model.CashFlows)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.NPVs)
-        </th>
         <th></th>
     </tr>
 
@@ -44,12 +41,11 @@
             @Html.DisplayFor(modelItem => item.CashFlows)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.NPVs)
+            @Html.ActionLink("View Table", "Details", new { id = item.ID })
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.NPVId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.NPVId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.NPVId })
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
         </td>
     </tr>
 }

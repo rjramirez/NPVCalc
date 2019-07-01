@@ -42,17 +42,36 @@
             @Html.DisplayFor(model => model.CashFlows)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.NPVs)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.NPVs)
-        </dd>
-
     </dl>
 </div>
+
+
+<div>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Discount %</th>
+            <th>Net Present Value</th>
+        </tr>
+        @foreach (var item in Model.NPVItemResult)
+        {
+            <tr>
+                <td>
+                    @string.Format("Period {0}(${1})",item.Period,item.CashFlow)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Discount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NPVResult)
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.NPVId }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
